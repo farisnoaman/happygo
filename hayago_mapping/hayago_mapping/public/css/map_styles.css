@@ -1,0 +1,404 @@
+/* Hayago Mapping - Map Styles */
+/* Copyright (c) 2025, Manus AI */
+
+/* Map Container Styles */
+.hayago-map {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Custom Leaflet Control Styles */
+.leaflet-control-custom {
+    background: white;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.leaflet-control-custom:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-control-custom a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+}
+
+.leaflet-control-custom a:hover {
+    color: #007bff;
+}
+
+/* Driver Marker Styles */
+.driver-marker {
+    transition: all 0.3s ease;
+}
+
+.driver-marker:hover {
+    transform: scale(1.1);
+    z-index: 1000;
+}
+
+/* Current Location Marker Animation */
+.current-location-marker {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Map Popup Styles */
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+    margin: 12px 16px;
+    line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Route Styles */
+.route-primary {
+    stroke: #007bff;
+    stroke-width: 4;
+    stroke-opacity: 0.8;
+    fill: none;
+}
+
+.route-alternative {
+    stroke: #6c757d;
+    stroke-width: 3;
+    stroke-opacity: 0.6;
+    fill: none;
+    stroke-dasharray: 10, 5;
+}
+
+.route-active {
+    stroke: #28a745;
+    stroke-width: 5;
+    stroke-opacity: 0.9;
+    fill: none;
+    animation: route-pulse 2s infinite;
+}
+
+@keyframes route-pulse {
+    0% {
+        stroke-opacity: 0.9;
+    }
+    50% {
+        stroke-opacity: 0.6;
+    }
+    100% {
+        stroke-opacity: 0.9;
+    }
+}
+
+/* Map Loading Overlay */
+.map-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    border-radius: 8px;
+}
+
+.map-loading .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Map Controls Panel */
+.map-controls {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    min-width: 200px;
+}
+
+.map-controls h6 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.map-controls .form-group {
+    margin-bottom: 10px;
+}
+
+.map-controls .form-group:last-child {
+    margin-bottom: 0;
+}
+
+.map-controls label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.map-controls input,
+.map-controls select {
+    width: 100%;
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.map-controls button {
+    width: 100%;
+    padding: 6px 12px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.map-controls button:hover {
+    background: #0056b3;
+}
+
+.map-controls button:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Driver Status Indicators */
+.driver-status {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.driver-status.available {
+    background: #28a745;
+}
+
+.driver-status.busy {
+    background: #ffc107;
+}
+
+.driver-status.offline {
+    background: #6c757d;
+}
+
+/* Trip Progress Indicator */
+.trip-progress {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.trip-progress h6 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #007bff, #28a745);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.trip-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+/* Navigation Instructions */
+.navigation-instructions {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.navigation-instructions h6 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.instruction-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.instruction-item:last-child {
+    border-bottom: none;
+}
+
+.instruction-icon {
+    width: 24px;
+    height: 24px;
+    background: #007bff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.instruction-text {
+    flex: 1;
+    font-size: 12px;
+    color: #333;
+}
+
+.instruction-distance {
+    font-size: 11px;
+    color: #666;
+    margin-left: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .map-controls {
+        position: relative;
+        margin-bottom: 10px;
+    }
+    
+    .trip-progress {
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+    
+    .navigation-instructions {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .leaflet-control-custom {
+        background: #2d3748;
+        border-color: rgba(255, 255, 255, 0.2);
+    }
+    
+    .leaflet-control-custom a {
+        color: #e2e8f0;
+    }
+    
+    .leaflet-control-custom:hover {
+        background: #4a5568;
+        border-color: #007bff;
+    }
+    
+    .map-controls,
+    .trip-progress,
+    .navigation-instructions {
+        background: #2d3748;
+        color: #e2e8f0;
+    }
+    
+    .map-controls h6,
+    .trip-progress h6,
+    .navigation-instructions h6 {
+        color: #e2e8f0;
+    }
+    
+    .map-controls input,
+    .map-controls select {
+        background: #4a5568;
+        border-color: #718096;
+        color: #e2e8f0;
+    }
+    
+    .instruction-text {
+        color: #e2e8f0;
+    }
+    
+    .instruction-distance,
+    .trip-info {
+        color: #a0aec0;
+    }
+}
+

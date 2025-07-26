@@ -1,0 +1,59 @@
+{
+ "actions": [],
+ "creation": "2025-07-26 15:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "timestamp",
+  "latitude",
+  "longitude",
+  "speed"
+ ],
+ "fields": [
+  {
+   "fieldname": "timestamp",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Timestamp",
+   "reqd": 1
+  },
+  {
+   "fieldname": "latitude",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Latitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "longitude",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Longitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "speed",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Speed (km/h)",
+   "precision": "2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-07-26 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hayago Mapping",
+ "name": "Route Log",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
+

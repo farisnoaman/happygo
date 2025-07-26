@@ -1,0 +1,238 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "naming_series:",
+ "creation": "2025-07-26 15:00:00.000000",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "driver",
+  "customer",
+  "pickup_section",
+  "pickup_address",
+  "pickup_latitude",
+  "pickup_longitude",
+  "dropoff_section",
+  "dropoff_address",
+  "dropoff_latitude",
+  "dropoff_longitude",
+  "timing_section",
+  "start_time",
+  "end_time",
+  "estimation_section",
+  "estimated_distance",
+  "estimated_duration",
+  "estimated_cost",
+  "actual_section",
+  "actual_distance",
+  "actual_duration",
+  "actual_cost",
+  "status_section",
+  "status",
+  "route_section",
+  "route_geojson",
+  "logged_route_geojson",
+  "route_logs"
+ ],
+ "fields": [
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Naming Series",
+   "options": "TRIP-.YYYY.-.MM.-.DD.-.#####",
+   "reqd": 1
+  },
+  {
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Driver",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Customer",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pickup_section",
+   "fieldtype": "Section Break",
+   "label": "Pickup Details"
+  },
+  {
+   "fieldname": "pickup_address",
+   "fieldtype": "Small Text",
+   "label": "Pickup Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pickup_latitude",
+   "fieldtype": "Float",
+   "label": "Pickup Latitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "pickup_longitude",
+   "fieldtype": "Float",
+   "label": "Pickup Longitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dropoff_section",
+   "fieldtype": "Section Break",
+   "label": "Dropoff Details"
+  },
+  {
+   "fieldname": "dropoff_address",
+   "fieldtype": "Small Text",
+   "label": "Dropoff Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dropoff_latitude",
+   "fieldtype": "Float",
+   "label": "Dropoff Latitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "dropoff_longitude",
+   "fieldtype": "Float",
+   "label": "Dropoff Longitude",
+   "precision": "8",
+   "reqd": 1
+  },
+  {
+   "fieldname": "timing_section",
+   "fieldtype": "Section Break",
+   "label": "Timing"
+  },
+  {
+   "fieldname": "start_time",
+   "fieldtype": "Datetime",
+   "label": "Start Time"
+  },
+  {
+   "fieldname": "end_time",
+   "fieldtype": "Datetime",
+   "label": "End Time"
+  },
+  {
+   "fieldname": "estimation_section",
+   "fieldtype": "Section Break",
+   "label": "Estimates"
+  },
+  {
+   "fieldname": "estimated_distance",
+   "fieldtype": "Float",
+   "label": "Estimated Distance (km)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "estimated_duration",
+   "fieldtype": "Float",
+   "label": "Estimated Duration (minutes)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "estimated_cost",
+   "fieldtype": "Currency",
+   "label": "Estimated Cost"
+  },
+  {
+   "fieldname": "actual_section",
+   "fieldtype": "Section Break",
+   "label": "Actual"
+  },
+  {
+   "fieldname": "actual_distance",
+   "fieldtype": "Float",
+   "label": "Actual Distance (km)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "actual_duration",
+   "fieldtype": "Float",
+   "label": "Actual Duration (minutes)",
+   "precision": "2"
+  },
+  {
+   "fieldname": "actual_cost",
+   "fieldtype": "Currency",
+   "label": "Actual Cost"
+  },
+  {
+   "fieldname": "status_section",
+   "fieldtype": "Section Break",
+   "label": "Status"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Pending\nAccepted\nOn Route\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fieldname": "route_section",
+   "fieldtype": "Section Break",
+   "label": "Route Data"
+  },
+  {
+   "fieldname": "route_geojson",
+   "fieldtype": "Long Text",
+   "label": "Planned Route (GeoJSON)"
+  },
+  {
+   "fieldname": "logged_route_geojson",
+   "fieldtype": "Long Text",
+   "label": "Logged Route (GeoJSON)"
+  },
+  {
+   "fieldname": "route_logs",
+   "fieldtype": "Table",
+   "label": "Route Logs",
+   "options": "Route Log"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-07-26 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hayago Mapping",
+ "name": "Trip",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "track_seen": 1,
+ "track_views": 1
+}
+

@@ -1,0 +1,102 @@
+{
+ "actions": [],
+ "creation": "2025-07-26 15:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "api_settings_section",
+  "nominatim_url",
+  "graphhopper_url",
+  "graphhopper_api_key",
+  "tracking_api_endpoint",
+  "driver_matching_section",
+  "nearby_driver_radius",
+  "cost_calculation_section",
+  "cost_per_km",
+  "cost_per_minute"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_settings_section",
+   "fieldtype": "Section Break",
+   "label": "API Settings"
+  },
+  {
+   "fieldname": "nominatim_url",
+   "fieldtype": "Data",
+   "label": "Nominatim API URL",
+   "default": "https://nominatim.openstreetmap.org/"
+  },
+  {
+   "fieldname": "graphhopper_url",
+   "fieldtype": "Data",
+   "label": "GraphHopper API URL",
+   "default": "https://graphhopper.com/api/1/route"
+  },
+  {
+   "fieldname": "graphhopper_api_key",
+   "fieldtype": "Password",
+   "label": "GraphHopper API Key"
+  },
+  {
+   "fieldname": "tracking_api_endpoint",
+   "fieldtype": "Data",
+   "label": "Tracking API Endpoint"
+  },
+  {
+   "fieldname": "driver_matching_section",
+   "fieldtype": "Section Break",
+   "label": "Driver Matching"
+  },
+  {
+   "fieldname": "nearby_driver_radius",
+   "fieldtype": "Float",
+   "label": "Nearby Driver Radius (km)",
+   "default": "5.0",
+   "precision": "2"
+  },
+  {
+   "fieldname": "cost_calculation_section",
+   "fieldtype": "Section Break",
+   "label": "Cost Calculation"
+  },
+  {
+   "fieldname": "cost_per_km",
+   "fieldtype": "Currency",
+   "label": "Cost per Kilometer",
+   "default": "1.0"
+  },
+  {
+   "fieldname": "cost_per_minute",
+   "fieldtype": "Currency",
+   "label": "Cost per Minute",
+   "default": "0.2"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2025-07-26 15:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Hayago Mapping",
+ "name": "Module Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
+

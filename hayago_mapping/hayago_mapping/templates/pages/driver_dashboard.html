@@ -1,0 +1,383 @@
+{% extends "templates/web.html" %}
+
+{% block title %}Driver Dashboard - Hayago Mapping{% endblock %}
+
+{% block page_content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="mb-4">Driver Dashboard</h2>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Map Section -->
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Live Map</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div id="driver-map" class="hayago-map" style="height: 500px;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Controls Section -->
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Driver Status</h6>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="driver-status" class="form-control">
+                            <option value="available">Available</option>
+                            <option value="busy">Busy</option>
+                            <option value="offline">Offline</option>
+                        </select>
+                    </div>
+                    <button id="update-location" class="btn btn-primary btn-block">
+                        Update Location
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Current Trip</h6>
+                </div>
+                <div class="card-body">
+                    <div id="current-trip-info">
+                        <p class="text-muted">No active trip</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Navigation</h6>
+                </div>
+                <div class="card-body">
+                    <div id="navigation-instructions">
+                        <p class="text-muted">No navigation active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    // Initialize driver dashboard
+    const driverDashboard = new DriverDashboard();
+});
+
+class DriverDashboard {
+    constructor() {
+        this.map = null;
+        this.currentTrip = null;
+        this.locationUpdateInterval = null;
+        
+        this.init();
+    }
+    
+    init() {
+        this.initializeMap();
+        this.setupEventHandlers();
+        this.startLocationTracking();
+        this.loadCurrentTrip();
+    }
+    
+    initializeMap() {
+        this.map = new hayago_mapping.MapController({
+            container: 'driver-map',
+            center: [37.7749, -122.4194],
+            zoom: 15,
+            height: '500px',
+            enableGeolocation: true,
+            onMapClick: (lat, lng) => {
+                console.log('Map clicked:', lat, lng);
+            }
+        });
+        
+        // Get current location and center map
+        this.map.getCurrentLocation();
+    }
+    
+    setupEventHandlers() {
+        $('#update-location').click(() => {
+            this.updateDriverLocation();
+        });
+        
+        $('#driver-status').change(() => {
+            this.updateDriverStatus();
+        });
+    }
+    
+    startLocationTracking() {
+        // Update location every 30 seconds
+        this.locationUpdateInterval = setInterval(() => {
+            this.updateDriverLocation();
+        }, 30000);
+        
+        // Initial location update
+        this.updateDriverLocation();
+    }
+    
+    updateDriverLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    const speed = position.coords.speed ? position.coords.speed * 3.6 : null; // Convert m/s to km/h
+                    const heading = position.coords.heading;
+                    const accuracy = position.coords.accuracy;
+                    
+                    // Update location on map
+                    this.map.setCurrentLocation(lat, lng);
+                    
+                    // Send location to tracking API
+                    this.sendLocationUpdate(lat, lng, speed, heading, accuracy);
+                },
+                (error) => {
+                    console.error('Geolocation error:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        }
+    }
+    
+    sendLocationUpdate(lat, lng, speed, heading, accuracy) {
+        const locationData = {
+            driver_id: frappe.session.user,
+            latitude: lat,
+            longitude: lng,
+            speed: speed,
+            heading: heading,
+            accuracy: accuracy,
+            is_offline: false,
+            trip_id: this.currentTrip ? this.currentTrip.id : null,
+            timestamp: new Date().toISOString()
+        };
+        
+        // Send to tracking API
+        fetch('/api/location', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(locationData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Location updated successfully');
+            } else {
+                console.error('Location update failed:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Location update error:', error);
+            // Store for offline sync
+            this.storeOfflineLocation(locationData);
+        });
+    }
+    
+    storeOfflineLocation(locationData) {
+        // Store in localStorage for offline sync
+        const offlineLocations = JSON.parse(localStorage.getItem('offline_locations') || '[]');
+        locationData.is_offline = true;
+        offlineLocations.push(locationData);
+        localStorage.setItem('offline_locations', JSON.stringify(offlineLocations));
+    }
+    
+    syncOfflineLocations() {
+        const offlineLocations = JSON.parse(localStorage.getItem('offline_locations') || '[]');
+        
+        if (offlineLocations.length === 0) return;
+        
+        fetch('/api/location/batch', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                locations: offlineLocations
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                localStorage.removeItem('offline_locations');
+                console.log('Offline locations synced successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Offline sync error:', error);
+        });
+    }
+    
+    updateDriverStatus() {
+        const status = $('#driver-status').val();
+        console.log('Driver status updated to:', status);
+        // Implement status update logic
+    }
+    
+    loadCurrentTrip() {
+        frappe.call({
+            method: 'hayago_mapping.api.get_active_trips',
+            callback: (response) => {
+                if (response.message && response.message.status === 'success') {
+                    const trips = response.message.trips || [];
+                    const driverTrip = trips.find(trip => trip.driver === frappe.session.user);
+                    
+                    if (driverTrip) {
+                        this.currentTrip = driverTrip;
+                        this.displayCurrentTrip(driverTrip);
+                        this.loadNavigationInstructions(driverTrip.name);
+                    }
+                }
+            }
+        });
+    }
+    
+    displayCurrentTrip(trip) {
+        const tripHtml = `
+            <div>
+                <h6>Trip ${trip.name}</h6>
+                <p><strong>From:</strong> ${trip.pickup_address}</p>
+                <p><strong>To:</strong> ${trip.dropoff_address}</p>
+                <p><strong>Status:</strong> <span class="badge badge-primary">${trip.status}</span></p>
+                <p><strong>Customer:</strong> ${trip.customer_name}</p>
+                ${trip.customer_mobile ? `<p><strong>Phone:</strong> ${trip.customer_mobile}</p>` : ''}
+            </div>
+        `;
+        
+        $('#current-trip-info').html(tripHtml);
+        
+        // Add trip route to map
+        if (trip.pickup_latitude && trip.pickup_longitude) {
+            this.map.addMarker('pickup', trip.pickup_latitude, trip.pickup_longitude, {
+                title: 'Pickup Location',
+                popup: `<strong>Pickup:</strong><br>${trip.pickup_address}`
+            });
+        }
+        
+        if (trip.dropoff_latitude && trip.dropoff_longitude) {
+            this.map.addMarker('dropoff', trip.dropoff_latitude, trip.dropoff_longitude, {
+                title: 'Dropoff Location',
+                popup: `<strong>Dropoff:</strong><br>${trip.dropoff_address}`
+            });
+        }
+    }
+    
+    loadNavigationInstructions(tripId) {
+        frappe.call({
+            method: 'hayago_mapping.navigation.get_navigation_instructions',
+            args: {
+                trip_id: tripId
+            },
+            callback: (response) => {
+                if (response.message && response.message.status === 'success') {
+                    const instructions = response.message.instructions || [];
+                    this.displayNavigationInstructions(instructions);
+                }
+            }
+        });
+    }
+    
+    displayNavigationInstructions(instructions) {
+        if (instructions.length === 0) {
+            $('#navigation-instructions').html('<p class="text-muted">No navigation instructions</p>');
+            return;
+        }
+        
+        let instructionsHtml = '';
+        instructions.slice(0, 3).forEach((instruction, index) => {
+            instructionsHtml += `
+                <div class="instruction-item mb-2">
+                    <div class="d-flex align-items-center">
+                        <div class="instruction-icon mr-2">
+                            ${index + 1}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="instruction-text">${instruction.text}</div>
+                            <small class="text-muted">${instruction.distance}m</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        $('#navigation-instructions').html(instructionsHtml);
+    }
+    
+    destroy() {
+        if (this.locationUpdateInterval) {
+            clearInterval(this.locationUpdateInterval);
+        }
+        
+        if (this.map) {
+            this.map.destroy();
+        }
+    }
+}
+
+// Handle online/offline events
+window.addEventListener('online', () => {
+    console.log('Connection restored');
+    if (window.driverDashboard) {
+        window.driverDashboard.syncOfflineLocations();
+    }
+});
+
+window.addEventListener('offline', () => {
+    console.log('Connection lost - switching to offline mode');
+});
+</script>
+
+<style>
+.instruction-item {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.instruction-item:last-child {
+    border-bottom: none;
+}
+
+.instruction-icon {
+    width: 24px;
+    height: 24px;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.card {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 8px;
+}
+
+.card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    border-radius: 8px 8px 0 0 !important;
+}
+</style>
+{% endblock %}
+
